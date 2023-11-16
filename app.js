@@ -11,12 +11,6 @@ const connection = sql.createConnection({
 
 app.use(express.json());
 
-app.post("/score", async (req, res) => {
-  score = req.body.score;
-  time = req.body.time;
-  connection.query(`insert into score values(\'${time}\',${score})`);
-});
-
 app.post("/", async (req, res) => {
   res.send("hello world");
   time = req.body.timestamp;
@@ -25,8 +19,8 @@ app.post("/", async (req, res) => {
   temperature = req.body.temperature;
   score = req.body.score;
   console.log(req.body);
-  connection.query(`insert into elec values(\'${time}\',${elec})`);
-  connection.query(`insert into co2 values(\'${time}\',${co2})`);
+  connection.query(`insert into Energy values(\'${time}\',${elec})`);
+  connection.query(`insert into CO2 values(\'${time}\',${co2})`);
   connection.query(`insert into temp values(\'${time}\',${temperature})`);
   value = [];
   value.push(elec);
@@ -37,7 +31,9 @@ app.post("/", async (req, res) => {
     .post("http://localhost:8000", data)
     .then((response) => {
       //receive response
-      console.log("ok", JSON.stringify(data));
+      score = response.body.score;
+      time = response.body.time;
+      connection.query(`insert into score values(\'${time}\',${score})`);
     })
     .catch((error) => {
       console.log(error);
